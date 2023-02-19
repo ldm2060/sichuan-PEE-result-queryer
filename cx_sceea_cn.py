@@ -3,7 +3,7 @@ import os
 from time import sleep 
 import ddddocr
 from PIL import Image
-from main import suofang, ksfz, start_browser, succeed, send, kksh, kname
+from main import suofang, ksfz, start_browser, succeed, send, kksh, kname,workpath
 
 ocr = ddddocr.DdddOcr()
 
@@ -30,17 +30,17 @@ def process(browser):
     while(len(result) != 4):
         browser.find_element('id', 'kbq').click()
         sleep(1)
-        browser.save_screenshot('login.png')
-        login_pic = Image.open('login.png')
+        browser.save_screenshot(workpath+'login.png')
+        login_pic = Image.open(workpath+'login.png')
         #通过上下左右的值，去截取验证码
         yzm_pic = login_pic.crop(val)
         login_pic.close()
-        yzm_pic.save('login.png')
-        login_pic = open('login.png', 'rb')
+        yzm_pic.save(workpath+'login.png')
+        login_pic = open(workpath+'login.png', 'rb')
         img_bytes = login_pic.read()
         login_pic.close()
         result = ocr.classification(img_bytes)
-    os.remove('login.png')
+    os.remove(workpath+'login.png')
     browser.find_element('id', 'input_ValidateCode').send_keys(result)
     browser.find_elements_by_class_name("btn")[0].click()
     sleep(1)
@@ -49,18 +49,13 @@ def process(browser):
     if kname in browser.page_source:
        succeed(browser,"省教育考试院")
        issuccess = True
+    #succeed(browser,"省教育考试院")
  
 def main():
-    num = 0
-    limit = 5000
     browser = start_browser()
     while True:
         if issuccess:
             break
-        num += 1
-        if num >= limit:
-            break
-        print("第"+str(num)+"次查询...")
         process(browser)
     if issuccess != True:
         send("错误","查询成绩出错")

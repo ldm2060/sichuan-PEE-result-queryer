@@ -1,10 +1,9 @@
 # encoding=utf-8
-import platform, time, os
+import os
 from time import sleep 
-from selenium import webdriver
-import ddddocr, urllib
+import ddddocr
 from PIL import Image
-from main import suofang, ksfz, kpass, start_browser, succeed, send
+from main import suofang, ksfz, kpass, start_browser, succeed, workpath
 
 def process():
     global limit
@@ -31,17 +30,17 @@ def process():
         while(len(result) != 4):
             browser.find_element_by_xpath("//a[contains(text(),'看不清')]").click()
             sleep(1)
-            browser.save_screenshot('login1.png')
-            login_pic = Image.open('login1.png')
+            browser.save_screenshot(workpath+'login1.png')
+            login_pic = Image.open(workpath+'login1.png')
             #通过上下左右的值，去截取验证码
             yzm_pic = login_pic.crop(val)
             login_pic.close()
-            yzm_pic.save('login1.png')
-            login_pic = open('login1.png', 'rb')
+            yzm_pic.save(workpath+'login1.png')
+            login_pic = open(workpath+'login1.png', 'rb')
             img_bytes = login_pic.read()
             login_pic.close()
             result = ocr.classification(img_bytes)
-        os.remove('login1.png')
+        os.remove(workpath+'login1.png')
         browser.find_element('id', 'txtyzm').send_keys(result)
         browser.find_element('id', 'btnLogin').click()
         sleep(2)
