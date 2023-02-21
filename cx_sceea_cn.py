@@ -42,7 +42,8 @@ def process(browser):
         result = ocr.classification(img_bytes)
     os.remove(workpath+'login.png')
     browser.find_element('id', 'input_ValidateCode').send_keys(result)
-    browser.find_elements_by_class_name("btn")[0].click()
+    #browser.find_elements_by_class_name("btn")[0].click()
+    browser.execute_script("window.open('YJCJResult.htm');");
     sleep(1)
     browser.close()
     browser.switch_to.window(browser.window_handles[0])
